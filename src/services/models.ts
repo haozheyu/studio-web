@@ -2,8 +2,8 @@ import type { H3VideoJob, H3VideoRequest, ModelKey } from '../types'
 
 export const modelCatalog = {
   deepseek: { name: 'DeepSeek-7B', id: 'deepseek', route: '/api/deepseek', role: '编剧 · 导演 · Agent' },
-  flux: { name: 'FLUX.2-klein', id: 'flux2-klein', route: '/api/flux', role: '人物 · 场景 · 分镜' },
-  minimax: { name: 'MiniMax-H3', id: 'minimax-h3', route: '/api/minimax', role: '视频 · 动作 · 声音' }
+  flux: { name: 'FLUX.2-klein', id: 'flux2-klein', route: '/api/flux', role: '人物 · 场景 · 分镜 · 首帧' },
+  minimax: { name: 'MiniMax-H3', id: 'minimax-h3', route: '/api/minimax', role: '文生视频 · 图生视频 · 音视频' }
 } as const
 
 export async function checkModel(key: ModelKey): Promise<boolean> {
@@ -20,7 +20,7 @@ export async function askDirector(prompt: string): Promise<string> {
       temperature: 0.7,
       max_tokens: 2048,
       messages: [
-        { role: 'system', content: '你是短剧总导演。回答要简洁、可执行，输出镜头设计与下一步模型任务。' },
+        { role: 'system', content: '你是影视制作系统中的总导演 Agent。请给出结构化、可执行的剧本、场次、镜头、人物、场景和下一步模型任务。' },
         { role: 'user', content: prompt }
       ]
     })
@@ -28,6 +28,20 @@ export async function askDirector(prompt: string): Promise<string> {
   if (!response.ok) throw new Error(`导演模型返回 ${response.status}`)
   const data = await response.json()
   return data.choices?.[0]?.message?.content || data.choices?.[0]?.message?.reasoning_content || '模型未返回文本。'
+}
+
+export async function generateFluxImage(prompt: string, size = '1024x1024'): Promise<string> {
+  const response = await fetch('/api/flux/v1/images/generations', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt, size, seed: Math.floor(Math.random() * 2147483647), response_format: 'file' })
+  })
+  if (!response.ok) {
+    const text = await response.text().catch(() => '')
+    throw new Error(text || `FLUX 返回 ${response.status}`)
+  }
+  const blob = await response.blob()
+  return URL.createObjectURL(blob)
 }
 
 const ratios = ['21:9', '16:9', '4:3', '1:1', '3:4', '9:16'] as const
