@@ -17,10 +17,10 @@ export async function askDirector(prompt: string): Promise<string> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: modelCatalog.deepseek.id,
-      temperature: 0.7,
-      max_tokens: 2048,
+      temperature: 0.5,
+      max_tokens: 4096,
       messages: [
-        { role: 'system', content: '你是影视制作系统中的总导演 Agent。请给出结构化、可执行的剧本、场次、镜头、人物、场景和下一步模型任务。' },
+        { role: 'system', content: '你是影视制作系统中的总导演 Agent。请给出结构化、可执行的剧本、场次、镜头、人物、场景和下一步模型任务。用户要求 JSON 时必须只返回合法 JSON，不要 Markdown 代码块。' },
         { role: 'user', content: prompt }
       ]
     })
@@ -30,7 +30,7 @@ export async function askDirector(prompt: string): Promise<string> {
   return data.choices?.[0]?.message?.content || data.choices?.[0]?.message?.reasoning_content || '模型未返回文本。'
 }
 
-export async function generateFluxImage(prompt: string, size = '1024x1024'): Promise<string> {
+export async function generateFluxImageBlob(prompt: string, size = '1024x1024'): Promise<Blob> {
   const response = await fetch('/api/flux/v1/images/generations', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -40,8 +40,11 @@ export async function generateFluxImage(prompt: string, size = '1024x1024'): Pro
     const text = await response.text().catch(() => '')
     throw new Error(text || `FLUX 返回 ${response.status}`)
   }
-  const blob = await response.blob()
-  return URL.createObjectURL(blob)
+  return response.blob()
+}
+
+export async function generateFluxImage(prompt: string, size = '1024x1024'): Promise<string> {
+  return URL.createObjectURL(await generateFluxImageBlob(prompt, size))
 }
 
 const ratios = ['21:9', '16:9', '4:3', '1:1', '3:4', '9:16'] as const
