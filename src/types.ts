@@ -1,5 +1,6 @@
 export type ModelKey = 'deepseek' | 'flux' | 'minimax'
 export type JobStatus = 'waiting' | 'running' | 'done' | 'failed'
+export type AssetType = 'character' | 'location' | 'image' | 'video'
 
 export interface Shot {
   id: string
@@ -25,13 +26,28 @@ export interface Scene {
   shots: Shot[]
 }
 
+export interface ScriptState {
+  source: string
+  generated: string
+  updatedAt?: string
+}
+
 export interface StudioProject {
   id: string
   title: string
   episode: string
   status: string
   scenes: Scene[]
+  script?: ScriptState
   createdAt?: string
+  updatedAt?: string
+}
+
+export interface ProjectSummary {
+  id: string
+  title: string
+  episode: string
+  status: string
   updatedAt?: string
 }
 
@@ -42,6 +58,17 @@ export interface Capability {
   category: string
 }
 
+export interface Asset {
+  id: number
+  projectId: string
+  type: AssetType
+  name: string
+  url: string
+  sourceShotId?: string
+  metadata?: string
+  createdAt?: string
+}
+
 export interface Job {
   id: number
   title: string
@@ -49,6 +76,9 @@ export interface Job {
   status: JobStatus
   time: string
   remoteId?: string
+  action?: 'image' | 'video'
+  shotId?: string
+  error?: string
 }
 
 export type H3Mode = 'auto' | 't2va' | 'fl2va' | 'ref2va'
