@@ -9,6 +9,11 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 4173,
       proxy: {
+        '/studio-api': {
+          target: env.STUDIO_API || 'http://127.0.0.1:8787',
+          changeOrigin: true,
+          rewrite: p => p.replace(/^\/studio-api/, '')
+        },
         '/api/deepseek': {
           target: env.DEEPSEEK_API,
           changeOrigin: true,
