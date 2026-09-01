@@ -1,10 +1,11 @@
 {
   "name": "ai-drama-studio-web",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
+    "server": "node server/index.mjs",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview --host 0.0.0.0"
   },
@@ -18,5 +19,8 @@
     "@types/node": "latest",
     "typescript": "~5.9.3",
     "vue-tsc": "latest"
+  },
+  "engines": {
+    "node": ">=22.5.0"
   }
 }

@@ -1,28 +1,30 @@
-# 依赖
+# Dependencies
 node_modules/
 
-# 构建产物
+# Build output
 dist/
 
 # IDE
 .idea/
 .vscode/
 
-# 日志
+# Logs
 *.log
 
-# 环境变量
+# Environment
 .env
 .env.*
 !.env.example
 
-# 系统文件
+# SQLite runtime data
+data/
+*.db
+*.db-shm
+*.db-wal
+
+# OS
 .DS_Store
 Thumbs.db
 
-# TypeScript 构建缓存
+# TypeScript build cache
 *.tsbuildinfo
-
-.env
-.env.*
-!.env.example
