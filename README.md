@@ -5,10 +5,10 @@
 ## 当前模型拓扑
 
 ```text
-DeepSeek-7B      http://10.221.34.101:8000  编剧 / 导演 / Agent
-FLUX.2-klein     http://10.221.34.101:8096  人物 / 场景 / 分镜 / 视频首帧
-MiniMax-H3       http://10.221.34.101:8091  文生视频 / 图生视频 / 音视频
-Studio API       http://127.0.0.1:8787       SQLite 项目状态与制作数据
+DeepSeek-7B        编剧 / 导演 / Agent
+FLUX.2-klein       人物 / 场景 / 分镜 / 视频首帧
+MiniMax-H3         文生视频 / 图生视频 / 音视频
+Studio API            SQLite 项目状态与制作数据
 ```
 
 ## 已实现
