@@ -52,11 +52,17 @@ export function createAsset(projectId: string, asset: Omit<Asset, 'id' | 'projec
 export async function uploadAssetBlob(projectId: string, blob: Blob, type: AssetType, name: string, sourceShotId?: string) {
   const params = new URLSearchParams({ type, name })
   if (sourceShotId) params.set('sourceShotId', sourceShotId)
-  const response = await fetch(`${api}/api/projects/${encodeURIComponent(projectId)}/assets/file?${params}`, {
+  const path = `/api/projects/${encodeURIComponent(projectId)}/assets/file?${params}`
+  const response = await fetch(`${api}${path}`, {
     method: 'POST', headers: { 'Content-Type': blob.type || 'application/octet-stream' }, body: blob
   })
   const data = await response.json().catch(() => ({}))
-  if (!response.ok) throw new Error(data.error || `Asset upload ${response.status}`)
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error(`Asset upload 404：Studio API 后端不是最新版本或 8787 旧进程未重启。请重启 npm run server，并确认 POST ${path} 已存在。`)
+    }
+    throw new Error(data.error || `Asset upload ${response.status}`)
+  }
   return data as Asset
 }
 
