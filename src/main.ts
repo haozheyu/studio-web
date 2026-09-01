@@ -3,4 +3,6 @@ import App from './App.vue'
 import './styles.css'
 import './studio.css'
 
-createApp(App).mount('#app')
+const app = createApp(App)
+app.config.globalProperties.window = window
+app.mount('#app')
